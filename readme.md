@@ -28,10 +28,14 @@ build and install:
 make install
 ```
 
+test:
+
+```
+make test
+```
+
 generate api doc:
 
 ```
 make doc
 ```
-
-
