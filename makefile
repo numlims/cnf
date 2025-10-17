@@ -11,6 +11,7 @@ version = $(shell git tag | sort -V | tail -1 | tr -d v)
 all:
 	# assemble ct files
 	ct cnf/init.ct
+	ct test/test.ct
 
 build:
 	make

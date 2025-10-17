@@ -29,6 +29,7 @@ if no settings, create stub settings file.
 
 ``
     if not os.path.exists(p):
+        os.makedirs(os.path.dirname(p), exist_ok=True)
         with open(p, "w") as file:
             file.write(make)
             print(f"cnf: please edit {p}, then run again.")
@@ -39,7 +40,7 @@ else read the conf, parse it if format given.
 
 ``
     else:
-        with open(cnfpath(), "r") as file:
+        with open(p, "r") as file:
             out = None
             if fmt == None:
                out = file.read()
@@ -80,13 +81,13 @@ get the root constant.
     elif root == cnf.home:
         frompath = Path.home()
     else:
-        print(f"error: {root} not known.")
+        print(f"error: {root} not known. ")
 ``
 
 append path.
 
 ``
-    return frompath / path
+    return os.path.join(frompath, path)
 ``
 
 imports for cnfpath.

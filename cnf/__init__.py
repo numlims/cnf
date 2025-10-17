@@ -15,12 +15,13 @@ def makeload(path:str, root:str=None, fmt:str=None, make:str=None):
     """
     p = cnfpath(root, path)
     if not os.path.exists(p):
+        os.makedirs(os.path.dirname(p), exist_ok=True)
         with open(p, "w") as file:
             file.write(make)
             print(f"cnf: please edit {p}, then run again.")
             return None
     else:
-        with open(cnfpath(), "r") as file:
+        with open(p, "r") as file:
             out = None
             if fmt == None:
                out = file.read()
@@ -44,5 +45,5 @@ def cnfpath(root, path):
     elif root == cnf.home:
         frompath = Path.home()
     else:
-        print(f"error: {root} not known.")
-    return frompath / path
+        print(f"error: {root} not known. ")
+    return os.path.join(frompath, path)

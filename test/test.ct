@@ -1,0 +1,53 @@
+test contains tests for cnf.
+
+``//test_cnf.py:
+``import``
+``test_makeload``
+``
+
+test_makeload checks whether makeload makes a file.
+
+``/test_makeload:
+def test_makeload():
+    ``.``
+``
+
+remove the output folder if already there.
+
+`shutil.rmtree()` removes a directory and all its contents. `os.remove()` only
+works for files, `pathlib.Path.rmdir()` only works for empty dirs.
+
+``
+    path = "test/try/conf"
+    if os.path.exists("test/try"):
+        shutil.rmtree("test/try")
+``
+
+create the conf file and check that if exists.
+
+``
+    content = "a: b"
+    cnf.makeload(path, fmt="yaml", make=content)
+    assert os.path.exists(path)
+``
+
+check the yaml parsing.
+
+``
+    config = cnf.makeload(path, fmt="yaml", make=content)
+    assert config["a"] == "b"
+``
+
+remove the created dir again.
+
+``
+    shutil.rmtree("test/try")
+``
+
+import.
+
+``/import:
+import cnf
+import os
+import shutil
+``
