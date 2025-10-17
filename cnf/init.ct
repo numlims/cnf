@@ -40,20 +40,33 @@ else read the conf, parse it if format given.
 
 ``
     else:
-        with open(p, "r") as file:
-            out = None
-            if fmt == None:
-               out = file.read()
-            elif fmt == "yaml":
-               out = yaml.safe_load(file)
-            elif fmt == "json":
-               out = json.load(file)
-            elif fmt == "ini":
-               config = configparser.ConfigParser()
-               out = config.read(file)
-            else:
-                print(f"{fmt} not known.")
-            return out
+        ``without open``
+        ``with open``
+``
+
+configparser doesn't need an opened file, it reads a path.
+
+``./without open:
+        if fmt == "ini":
+           config = configparser.ConfigParser()
+           config.read(p)
+           return config
+``
+
+read the other formats from opened file.
+
+``../with open:
+        else:
+            with open(p, "r") as file:
+                if fmt == None:
+                   return file.read()
+                elif fmt == "yaml":
+                   return yaml.safe_load(file)
+                elif fmt == "json":
+                   return json.load(file)
+                else:
+                   print(f"{fmt} not known.")
+                   return None
 ``
 
 imports for makeload.

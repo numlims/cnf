@@ -3,6 +3,7 @@ test contains tests for cnf.
 ``//test_cnf.py:
 ``import``
 ``test_makeload``
+``_tryconf``
 ``
 
 test_makeload checks whether makeload makes a file.
@@ -12,10 +13,32 @@ def test_makeload():
     ``.``
 ``
 
-remove the output folder if already there.
+try yaml.
 
-`shutil.rmtree()` removes a directory and all its contents. `os.remove()` only
-works for files, `pathlib.Path.rmdir()` only works for empty dirs.
+``
+    config = _tryconf("yaml", "a: b")
+    assert config["a"] == "b"
+``
+
+try ini.
+
+``
+    content = """
+[a]
+b = c
+"""
+    config = _tryconf("ini", content)
+    assert config["a"]["b"] == "c"
+``
+
+_createconfig creates a conf file, returns its contents and cleans up.
+
+``/_tryconf:
+def _tryconf(fmt, content):
+    ``.``
+``
+
+remove the output folder if already there.
 
 ``
     path = "test/try/conf"
@@ -23,25 +46,32 @@ works for files, `pathlib.Path.rmdir()` only works for empty dirs.
         shutil.rmtree("test/try")
 ``
 
+`shutil.rmtree()` removes a directory and all its contents. `os.remove()` only
+works for files, `pathlib.Path.rmdir()` only works for empty dirs.
+
 create the conf file and check that if exists.
 
 ``
-    content = "a: b"
-    cnf.makeload(path, fmt="yaml", make=content)
+    cnf.makeload(path, fmt=fmt, make=content)
     assert os.path.exists(path)
 ``
 
-check the yaml parsing.
+load the config.
 
 ``
-    config = cnf.makeload(path, fmt="yaml", make=content)
-    assert config["a"] == "b"
+    config = cnf.makeload(path, fmt=fmt, make=content)
 ``
 
-remove the created dir again.
+remove the created files again.
 
 ``
     shutil.rmtree("test/try")
+``
+
+return for checking.
+
+``
+    return config
 ``
 
 import.

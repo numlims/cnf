@@ -21,20 +21,21 @@ def makeload(path:str, root:str=None, fmt:str=None, make:str=None):
             print(f"cnf: please edit {p}, then run again.")
             return None
     else:
-        with open(p, "r") as file:
-            out = None
-            if fmt == None:
-               out = file.read()
-            elif fmt == "yaml":
-               out = yaml.safe_load(file)
-            elif fmt == "json":
-               out = json.load(file)
-            elif fmt == "ini":
-               config = configparser.ConfigParser()
-               out = config.read(file)
-            else:
-                print(f"{fmt} not known.")
-            return out
+        if fmt == "ini":
+           config = configparser.ConfigParser()
+           config.read(p)
+           return config
+        else:
+            with open(p, "r") as file:
+                if fmt == None:
+                   return file.read()
+                elif fmt == "yaml":
+                   return yaml.safe_load(file)
+                elif fmt == "json":
+                   return json.load(file)
+                else:
+                   print(f"{fmt} not known.")
+                   return None
 def cnfpath(root, path):
     """
     cnfpath appends path to a cnf constant, root.
