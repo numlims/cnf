@@ -32,6 +32,15 @@
             <li>
                     <a class="function" href="#cnfpath">cnfpath</a>
             </li>
+            <li>
+                    <a class="class" href="#MakeCnfException">MakeCnfException</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#MakeCnfException.__init__">MakeCnfException</a>
+                        </li>
+                </ul>
+
+            </li>
     </ul>
 
 
@@ -59,50 +68,58 @@ cnf    </h1>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">configparser</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="n">home</span> <span class="o">=</span> <span class="s2">&quot;home&quot;</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="k">def</span><span class="w"> </span><span class="nf">makeload</span><span class="p">(</span><span class="n">path</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">make</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="k">def</span><span class="w"> </span><span class="nf">makeload</span><span class="p">(</span><span class="n">path</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">make</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">    makeload reads the conf file from `path` rooted in `root`, creates</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="sd">    it using `make` as template string if it&#39;s not there, and returns it</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">    parsed from a given format.</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">    makeload reads the conf file from `path` rooted in `root`, creates if</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="sd">    from `make` string it&#39;s not there, and returns it parsed from a given</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">    format.</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">    </span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="sd">    it keeps the root part extra so it can be set with a constant like</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">    `cnf.home`.</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="n">p</span> <span class="o">=</span> <span class="n">cnfpath</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">make</span><span class="p">)</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cnf: please edit </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">, then run again.&quot;</span><span class="p">)</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>            <span class="k">return</span> <span class="kc">None</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;ini&quot;</span><span class="p">:</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>           <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>           <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>           <span class="k">return</span> <span class="n">config</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>                <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>                   <span class="k">return</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>                <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;yaml&quot;</span><span class="p">:</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>                   <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>                <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>                   <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>                <span class="k">else</span><span class="p">:</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>                   <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2"> not known.&quot;</span><span class="p">)</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>                   <span class="k">return</span> <span class="kc">None</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a><span class="k">def</span><span class="w"> </span><span class="nf">cnfpath</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a><span class="sd">    cnfpath appends path to a cnf constant, root.</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>    <span class="n">frompath</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="k">if</span> <span class="n">root</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>        <span class="n">frompath</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="k">elif</span> <span class="n">root</span> <span class="o">==</span> <span class="n">cnf</span><span class="o">.</span><span class="n">home</span><span class="p">:</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>        <span class="n">frompath</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;error: </span><span class="si">{</span><span class="n">root</span><span class="si">}</span><span class="s2"> not known. &quot;</span><span class="p">)</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">frompath</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">    </span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">    if no config file was there and it was created, a `MakeCnfException` is</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">    thrown. </span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="n">p</span> <span class="o">=</span> <span class="n">cnfpath</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">make</span><span class="p">)</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>            <span class="k">raise</span> <span class="n">MakeCnfException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;please edit </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">, then run again.&quot;</span><span class="p">)</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>            <span class="k">return</span> <span class="kc">None</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;ini&quot;</span><span class="p">:</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>           <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>           <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>           <span class="k">return</span> <span class="n">config</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>                <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>                   <span class="k">return</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>                <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;yaml&quot;</span><span class="p">:</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>                   <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>                <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>                   <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>                <span class="k">else</span><span class="p">:</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>                   <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2"> not known.&quot;</span><span class="p">)</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>                   <span class="k">return</span> <span class="kc">None</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="k">def</span><span class="w"> </span><span class="nf">cnfpath</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a><span class="sd">    cnfpath appends path to a cnf constant, root.</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="n">frompath</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>    <span class="k">if</span> <span class="n">root</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>        <span class="n">frompath</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="k">elif</span> <span class="n">root</span> <span class="o">==</span> <span class="n">home</span><span class="p">:</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>        <span class="n">frompath</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;error: </span><span class="si">{</span><span class="n">root</span><span class="si">}</span><span class="s2"> not known. &quot;</span><span class="p">)</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">frompath</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MakeCnfException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -124,53 +141,59 @@ cnf    </h1>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">makeload</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">path</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>, </span><span class="param"><span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>, </span><span class="param"><span class="n">make</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">):</span></span>
+        <span class="name">makeload</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">make</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="makeload-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#makeload"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="makeload-8"><a href="#makeload-8"><span class="linenos"> 8</span></a><span class="k">def</span><span class="w"> </span><span class="nf">makeload</span><span class="p">(</span><span class="n">path</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">make</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="makeload-8"><a href="#makeload-8"><span class="linenos"> 8</span></a><span class="k">def</span><span class="w"> </span><span class="nf">makeload</span><span class="p">(</span><span class="n">path</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">make</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 </span><span id="makeload-9"><a href="#makeload-9"><span class="linenos"> 9</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="makeload-10"><a href="#makeload-10"><span class="linenos">10</span></a><span class="sd">    makeload reads the conf file from `path` rooted in `root`, creates</span>
-</span><span id="makeload-11"><a href="#makeload-11"><span class="linenos">11</span></a><span class="sd">    it using `make` as template string if it&#39;s not there, and returns it</span>
-</span><span id="makeload-12"><a href="#makeload-12"><span class="linenos">12</span></a><span class="sd">    parsed from a given format.</span>
+</span><span id="makeload-10"><a href="#makeload-10"><span class="linenos">10</span></a><span class="sd">    makeload reads the conf file from `path` rooted in `root`, creates if</span>
+</span><span id="makeload-11"><a href="#makeload-11"><span class="linenos">11</span></a><span class="sd">    from `make` string it&#39;s not there, and returns it parsed from a given</span>
+</span><span id="makeload-12"><a href="#makeload-12"><span class="linenos">12</span></a><span class="sd">    format.</span>
 </span><span id="makeload-13"><a href="#makeload-13"><span class="linenos">13</span></a><span class="sd">    </span>
 </span><span id="makeload-14"><a href="#makeload-14"><span class="linenos">14</span></a><span class="sd">    it keeps the root part extra so it can be set with a constant like</span>
 </span><span id="makeload-15"><a href="#makeload-15"><span class="linenos">15</span></a><span class="sd">    `cnf.home`.</span>
-</span><span id="makeload-16"><a href="#makeload-16"><span class="linenos">16</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="makeload-17"><a href="#makeload-17"><span class="linenos">17</span></a>    <span class="n">p</span> <span class="o">=</span> <span class="n">cnfpath</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
-</span><span id="makeload-18"><a href="#makeload-18"><span class="linenos">18</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
-</span><span id="makeload-19"><a href="#makeload-19"><span class="linenos">19</span></a>        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="makeload-20"><a href="#makeload-20"><span class="linenos">20</span></a>        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-</span><span id="makeload-21"><a href="#makeload-21"><span class="linenos">21</span></a>            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">make</span><span class="p">)</span>
-</span><span id="makeload-22"><a href="#makeload-22"><span class="linenos">22</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cnf: please edit </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">, then run again.&quot;</span><span class="p">)</span>
-</span><span id="makeload-23"><a href="#makeload-23"><span class="linenos">23</span></a>            <span class="k">return</span> <span class="kc">None</span>
-</span><span id="makeload-24"><a href="#makeload-24"><span class="linenos">24</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="makeload-25"><a href="#makeload-25"><span class="linenos">25</span></a>        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;ini&quot;</span><span class="p">:</span>
-</span><span id="makeload-26"><a href="#makeload-26"><span class="linenos">26</span></a>           <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
-</span><span id="makeload-27"><a href="#makeload-27"><span class="linenos">27</span></a>           <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-</span><span id="makeload-28"><a href="#makeload-28"><span class="linenos">28</span></a>           <span class="k">return</span> <span class="n">config</span>
-</span><span id="makeload-29"><a href="#makeload-29"><span class="linenos">29</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="makeload-30"><a href="#makeload-30"><span class="linenos">30</span></a>            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-</span><span id="makeload-31"><a href="#makeload-31"><span class="linenos">31</span></a>                <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="makeload-32"><a href="#makeload-32"><span class="linenos">32</span></a>                   <span class="k">return</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-</span><span id="makeload-33"><a href="#makeload-33"><span class="linenos">33</span></a>                <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;yaml&quot;</span><span class="p">:</span>
-</span><span id="makeload-34"><a href="#makeload-34"><span class="linenos">34</span></a>                   <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-</span><span id="makeload-35"><a href="#makeload-35"><span class="linenos">35</span></a>                <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
-</span><span id="makeload-36"><a href="#makeload-36"><span class="linenos">36</span></a>                   <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-</span><span id="makeload-37"><a href="#makeload-37"><span class="linenos">37</span></a>                <span class="k">else</span><span class="p">:</span>
-</span><span id="makeload-38"><a href="#makeload-38"><span class="linenos">38</span></a>                   <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2"> not known.&quot;</span><span class="p">)</span>
-</span><span id="makeload-39"><a href="#makeload-39"><span class="linenos">39</span></a>                   <span class="k">return</span> <span class="kc">None</span>
+</span><span id="makeload-16"><a href="#makeload-16"><span class="linenos">16</span></a><span class="sd">    </span>
+</span><span id="makeload-17"><a href="#makeload-17"><span class="linenos">17</span></a><span class="sd">    if no config file was there and it was created, a `MakeCnfException` is</span>
+</span><span id="makeload-18"><a href="#makeload-18"><span class="linenos">18</span></a><span class="sd">    thrown. </span>
+</span><span id="makeload-19"><a href="#makeload-19"><span class="linenos">19</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="makeload-20"><a href="#makeload-20"><span class="linenos">20</span></a>    <span class="n">p</span> <span class="o">=</span> <span class="n">cnfpath</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+</span><span id="makeload-21"><a href="#makeload-21"><span class="linenos">21</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+</span><span id="makeload-22"><a href="#makeload-22"><span class="linenos">22</span></a>        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="makeload-23"><a href="#makeload-23"><span class="linenos">23</span></a>        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+</span><span id="makeload-24"><a href="#makeload-24"><span class="linenos">24</span></a>            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">make</span><span class="p">)</span>
+</span><span id="makeload-25"><a href="#makeload-25"><span class="linenos">25</span></a>            <span class="k">raise</span> <span class="n">MakeCnfException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;please edit </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">, then run again.&quot;</span><span class="p">)</span>
+</span><span id="makeload-26"><a href="#makeload-26"><span class="linenos">26</span></a>            <span class="k">return</span> <span class="kc">None</span>
+</span><span id="makeload-27"><a href="#makeload-27"><span class="linenos">27</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="makeload-28"><a href="#makeload-28"><span class="linenos">28</span></a>        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;ini&quot;</span><span class="p">:</span>
+</span><span id="makeload-29"><a href="#makeload-29"><span class="linenos">29</span></a>           <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+</span><span id="makeload-30"><a href="#makeload-30"><span class="linenos">30</span></a>           <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</span><span id="makeload-31"><a href="#makeload-31"><span class="linenos">31</span></a>           <span class="k">return</span> <span class="n">config</span>
+</span><span id="makeload-32"><a href="#makeload-32"><span class="linenos">32</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="makeload-33"><a href="#makeload-33"><span class="linenos">33</span></a>            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+</span><span id="makeload-34"><a href="#makeload-34"><span class="linenos">34</span></a>                <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="makeload-35"><a href="#makeload-35"><span class="linenos">35</span></a>                   <span class="k">return</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span><span id="makeload-36"><a href="#makeload-36"><span class="linenos">36</span></a>                <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;yaml&quot;</span><span class="p">:</span>
+</span><span id="makeload-37"><a href="#makeload-37"><span class="linenos">37</span></a>                   <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+</span><span id="makeload-38"><a href="#makeload-38"><span class="linenos">38</span></a>                <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
+</span><span id="makeload-39"><a href="#makeload-39"><span class="linenos">39</span></a>                   <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+</span><span id="makeload-40"><a href="#makeload-40"><span class="linenos">40</span></a>                <span class="k">else</span><span class="p">:</span>
+</span><span id="makeload-41"><a href="#makeload-41"><span class="linenos">41</span></a>                   <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2"> not known.&quot;</span><span class="p">)</span>
+</span><span id="makeload-42"><a href="#makeload-42"><span class="linenos">42</span></a>                   <span class="k">return</span> <span class="kc">None</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>makeload reads the conf file from <code>path</code> rooted in <code>root</code>, creates
-it using <code>make</code> as template string if it's not there, and returns it
-parsed from a given format.</p>
+            <div class="docstring"><p>makeload reads the conf file from <code>path</code> rooted in <code>root</code>, creates if
+from <code>make</code> string it's not there, and returns it parsed from a given
+format.</p>
 
 <p>it keeps the root part extra so it can be set with a constant like
 <code><a href="#home">cnf.home</a></code>.</p>
+
+<p>if no config file was there and it was created, a <code><a href="#MakeCnfException">MakeCnfException</a></code> is
+thrown.</p>
 </div>
 
 
@@ -186,18 +209,18 @@ parsed from a given format.</p>
 
     </div>
     <a class="headerlink" href="#cnfpath"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="cnfpath-40"><a href="#cnfpath-40"><span class="linenos">40</span></a><span class="k">def</span><span class="w"> </span><span class="nf">cnfpath</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-</span><span id="cnfpath-41"><a href="#cnfpath-41"><span class="linenos">41</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="cnfpath-42"><a href="#cnfpath-42"><span class="linenos">42</span></a><span class="sd">    cnfpath appends path to a cnf constant, root.</span>
-</span><span id="cnfpath-43"><a href="#cnfpath-43"><span class="linenos">43</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="cnfpath-44"><a href="#cnfpath-44"><span class="linenos">44</span></a>    <span class="n">frompath</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-</span><span id="cnfpath-45"><a href="#cnfpath-45"><span class="linenos">45</span></a>    <span class="k">if</span> <span class="n">root</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="cnfpath-46"><a href="#cnfpath-46"><span class="linenos">46</span></a>        <span class="n">frompath</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-</span><span id="cnfpath-47"><a href="#cnfpath-47"><span class="linenos">47</span></a>    <span class="k">elif</span> <span class="n">root</span> <span class="o">==</span> <span class="n">cnf</span><span class="o">.</span><span class="n">home</span><span class="p">:</span>
-</span><span id="cnfpath-48"><a href="#cnfpath-48"><span class="linenos">48</span></a>        <span class="n">frompath</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
-</span><span id="cnfpath-49"><a href="#cnfpath-49"><span class="linenos">49</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="cnfpath-50"><a href="#cnfpath-50"><span class="linenos">50</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;error: </span><span class="si">{</span><span class="n">root</span><span class="si">}</span><span class="s2"> not known. &quot;</span><span class="p">)</span>
-</span><span id="cnfpath-51"><a href="#cnfpath-51"><span class="linenos">51</span></a>    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">frompath</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="cnfpath-43"><a href="#cnfpath-43"><span class="linenos">43</span></a><span class="k">def</span><span class="w"> </span><span class="nf">cnfpath</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+</span><span id="cnfpath-44"><a href="#cnfpath-44"><span class="linenos">44</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="cnfpath-45"><a href="#cnfpath-45"><span class="linenos">45</span></a><span class="sd">    cnfpath appends path to a cnf constant, root.</span>
+</span><span id="cnfpath-46"><a href="#cnfpath-46"><span class="linenos">46</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="cnfpath-47"><a href="#cnfpath-47"><span class="linenos">47</span></a>    <span class="n">frompath</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span id="cnfpath-48"><a href="#cnfpath-48"><span class="linenos">48</span></a>    <span class="k">if</span> <span class="n">root</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="cnfpath-49"><a href="#cnfpath-49"><span class="linenos">49</span></a>        <span class="n">frompath</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span id="cnfpath-50"><a href="#cnfpath-50"><span class="linenos">50</span></a>    <span class="k">elif</span> <span class="n">root</span> <span class="o">==</span> <span class="n">home</span><span class="p">:</span>
+</span><span id="cnfpath-51"><a href="#cnfpath-51"><span class="linenos">51</span></a>        <span class="n">frompath</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+</span><span id="cnfpath-52"><a href="#cnfpath-52"><span class="linenos">52</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="cnfpath-53"><a href="#cnfpath-53"><span class="linenos">53</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;error: </span><span class="si">{</span><span class="n">root</span><span class="si">}</span><span class="s2"> not known. &quot;</span><span class="p">)</span>
+</span><span id="cnfpath-54"><a href="#cnfpath-54"><span class="linenos">54</span></a>    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">frompath</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -205,6 +228,50 @@ parsed from a given format.</p>
 </div>
 
 
+                </section>
+                <section id="MakeCnfException">
+                            <input id="MakeCnfException-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">MakeCnfException</span><wbr>(<span class="base">builtins.Exception</span>):
+
+                <label class="view-source-button" for="MakeCnfException-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#MakeCnfException"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MakeCnfException-55"><a href="#MakeCnfException-55"><span class="linenos">55</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MakeCnfException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+</span><span id="MakeCnfException-56"><a href="#MakeCnfException-56"><span class="linenos">56</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+</span><span id="MakeCnfException-57"><a href="#MakeCnfException-57"><span class="linenos">57</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="MakeCnfException-58"><a href="#MakeCnfException-58"><span class="linenos">58</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MakeCnfException-59"><a href="#MakeCnfException-59"><span class="linenos">59</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Common base class for all non-exit exceptions.</p>
+</div>
+
+
+                            <div id="MakeCnfException.__init__" class="classattr">
+                                        <input id="MakeCnfException.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">MakeCnfException</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">message</span><span class="p">:</span> <span class="nb">str</span></span>)</span>
+
+                <label class="view-source-button" for="MakeCnfException.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#MakeCnfException.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MakeCnfException.__init__-56"><a href="#MakeCnfException.__init__-56"><span class="linenos">56</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+</span><span id="MakeCnfException.__init__-57"><a href="#MakeCnfException.__init__-57"><span class="linenos">57</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="MakeCnfException.__init__-58"><a href="#MakeCnfException.__init__-58"><span class="linenos">58</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MakeCnfException.__init__-59"><a href="#MakeCnfException.__init__-59"><span class="linenos">59</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
                 </section>
     </main>
 </body>
