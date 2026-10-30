@@ -15,14 +15,14 @@ download cnf whl from
 pip:
 
 ```
-pip install dbcq-<version>.whl
+pip install cnf-<version>.whl
 ```
 
 ## dev
 
 edit [`cnf/init.ct`](./cnf/init.ct).
 
-to generate the code from the .ct files get [ct](https://github.com/tnustrings/ct).
+generate the code from the .ct files with [ct](https://github.com/tnustrings/ct).
 
 build and install:
 

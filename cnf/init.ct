@@ -1,110 +1,159 @@
+# cnf
+
 cnf creates and loads configuration files.
 
 ``//__init__.py:
 ``import``
 ``const``
 ``makeload``
-``cnfpath``
+``_cnfpath``
+``_make``
+``_load``
+``_overwrite``
+
 ``MakeCnfException``
 ``
 
-makeload reads the conf file from `path` rooted in `root`, creates if
-from `make` string it's not there, and returns it parsed from a given
-format.
+makeload reads the conf file(s) at `path` rooted in cnf.home,
+cnf.system or both and parses them from a given format, subsequent
+values overwriting values before.
 
-it keeps the root part extra so it can be set with a constant like
-`cnf.home`.
+if no config file is there it creates one at the first writable root from `make`.
+
+`company` is needed for the windows config paths.
 
 if no config file was there and it was created, a `MakeCnfException` is
 thrown. 
 
 ``/makeload:
-def makeload(path:str=None, root:str=None, fmt:str=None, make:str=None):
+def makeload(path:str=None, roots:str=None, company:str=None, fmt:str=None, make:str=None):
     ``.``
 ``
 
-append root to the path.
+resolve the complete paths.
 
 ``
-    p = cnfpath(root, path)
+    paths = []
+    for root in roots:
+        paths.append(_cnfpath(root, path, company=company))
 ``
 
-if no settings, create stub settings file.
+try to load files at the resoled paths.  keep track of whether at any
+of the paths there is an actual file.
 
 ``
-    if not os.path.exists(p):
-        os.makedirs(os.path.dirname(p), exist_ok=True)
-        with open(p, "w") as file:
-            file.write(make)
-            raise MakeCnfException(f"please edit {p}, then run again.")
+    anyexists = False
+    mergedcontent = {}
+    for p in paths:
+        exists, content = _load(p, fmt)
+        if exists:
+            anyexists = True
+        _overwrite(mergedcontent, content)
+``
+
+if there isn't a file at any of the paths, create one from
+make-template at the first writeable path.
+
+``
+    if not anyexists:
+        anywriteable = False
+        for p in paths:
+            if os.access(p, os.W_OK):
+                anywriteable = True
+                _make(p, make)
+                raise MakeCnfException(f"stub config file created at {p}. please edit.")
+                return None
+        if not anywriteable:
+            raise Exception(f"cnf: none of the config paths {paths} was writable, please try to put a config file there manually using this template: {make}")  # TODO should this be a MakeCnfException?  or another custom exception?
             return None
 ``
 
-else read the conf, parse it if format given.
+return whatever content was loaded (and merged) from the one or more
+roots.
 
 ``
-    else:
-        ``without open``
-        ``with open``
+    return mergedcontent
 ``
 
-configparser doesn't need an opened file, it reads a path.
+the root constants.
 
-``./without open:
-        if fmt == "ini":
-           config = configparser.ConfigParser()
-           config.read(p)
-           return config
+``/const:
+home = "home"  # in the user's home directory
+system = "system"  # system wide
 ``
 
-read the other formats from opened file.
-
-``../with open:
-        else:
-            with open(p, "r") as file:
-                if fmt == None:
-                   return file.read()
-                elif fmt == "yaml":
-                   return yaml.safe_load(file)
-                elif fmt == "json":
-                   return json.load(file)
-                else:
-                   print(f"{fmt} not known.")
-                   return None
-``
 
 imports for makeload.
 
 ``/import:
 import os
-import yaml
-import json
-import configparser
 ``
 
-cnfpath appends path to a cnf constant, root.
 
-``/cnfpath:
-def cnfpath(root, path):
-    ``.``
+
+_cnfpath appends path to root, which can be cnf.home or cnf.system.
+company is needed for the windows config paths.
+
+``/_cnfpath:
+def _cnfpath(root, path, company=None):
+    ``_``
+``
+
+in windows both local and system wide config paths need a company
+name, so give an error if no company specified.
+
+``_:
+    if company is None:
+        raise Exception(f"cnf: company needs to be specified for windows config paths.")
 ``
 
 get the root constant.
 
 ``
-    frompath = ""
+    rootpath = ""
     if root == None:
-        frompath = ""
+        rootpath = ""
     elif root == home:
-        frompath = Path.home()
+        ``home``
+    elif root == system:
+        ``system``
+``
+
+the home location of conf files is ~/.config/ for posix and USERPROFILE/AppData/Local/<company>/ for windows.
+
+for windows, see https://learn.microsoft.com/en-us/archive/blogs/patricka/where-should-i-store-my-data-and-configuration-files-if-i-target-multiple-os-versions
+
+``./home:
+        if os.name == "posix":
+            rootpath = os.path.join(Path.home(), ".config/")
+        elif os.name == "nt":
+            rootpath = os.path.join(Path.home(), f"AppData/Local/{company}")
+        else:
+            raise Exception(f"cnf: no home config location for os {os.name}.")
+``            
+
+the system-wide location of conf files is /etc/ for posix and C:\ProgramData\<company>\<app> for windows.
+
+``../system:
+        if os.name == "posix":
+            rootpath = os.path.join("/etc/")
+        elif os.name == "nt":
+            rootpath = os.path.join(f"/ProgramData/{company}/")
+        else:
+            raise Exception(f"cnf: no system-wide config location for os {os.name}.")
+``
+
+else say the root is not known.
+
+``/_cnfpath/_
     else:
-        print(f"error: {root} not known. ")
+        raise Exception(f"cnf: root {root} not known.")
 ``
 
-append path.
+append the path given by the user.
 
 ``
-    return os.path.join(frompath, path)
+    return os.path.join(rootpath, path)
 ``
 
 imports for cnfpath.
@@ -113,11 +162,105 @@ imports for cnfpath.
 from pathlib import Path
 ``
 
-introduce the from constants.
+make creates a stub config file at path p.
 
-``/const:
-home = "home"
+``/_make:
+def _make(p:str, content:str):
+    if os.path.exists(p):
+        raise Exception(f"cnf: file exists at {p}, not overwriting it.")
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    with open(p, "w") as file:
+        file.write(content)
 ``
+
+_load loads the config file at path, parsing it as fmt.
+
+``/_load:
+def _load(p:str, fmt:str):
+    ``_``
+``
+
+from the returned content can't be inferred whether the file exists (an empty yaml file parses as None, not as an empty dict), so return whether the file exists.
+
+``_:
+    exists = os.path.exists
+``
+
+configparser doesn't need an opened file, it reads a path.
+
+``
+    if fmt == "ini":
+       config = configparser.ConfigParser()
+       config.read(p)
+       return exists, config
+``
+
+read the other formats from opened file.
+
+``
+    else:
+        with open(p, "r") as file:
+            if fmt == None:
+               return exists, file.read()
+            elif fmt == "yaml":
+               return exists, yaml.safe_load(file)
+            elif fmt == "json":
+               return exists, json.load(file)
+            else:
+               print(f"{fmt} not known.")
+               return exists, None
+``
+
+imports for _load.
+
+``/import
+import yaml
+import json
+import configparser
+``
+
+_overwrite overwrites the values in dicta with what's in dictb.
+
+``/_overwrite:
+def _overwrite(dicta=None, dictb=None):
+    ``_``
+``
+
+do nothing if dictb is None.
+
+``_:
+    if dictb is None:
+        return
+``
+
+go over the keys in dict b.
+
+``
+    for key in dictb:
+        ``.``
+``
+
+key is not in dicta: just put it in.
+
+``
+        if not key in dicta:
+            dicta[key] = dictb[key]
+``
+
+dictb at key is a map: recurse.
+
+``
+        elif isinstance(dictb[key], dict):
+            overwrite(dicta[key], dictb[key])
+``
+
+dictb at key is not a map: overwrite.
+
+``
+        else:
+            dicta[key] = dictb[key]
+``
+
 
 MakeCnfException is thrown when the config file was just created, for clients to
 catch it, display it, and exit quietly.
