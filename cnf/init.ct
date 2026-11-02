@@ -5,7 +5,11 @@ cnf creates and loads configuration files.
 ``//__init__.py:
 ``import``
 ``const``
-``makeload``
+class cnf:
+    ``init``
+    ``addflags``
+    ``handleflag``
+    
 ``_cnfpath``
 ``_make``
 ``_load``
@@ -14,7 +18,7 @@ cnf creates and loads configuration files.
 ``MakeCnfException``
 ``
 
-makeload reads the conf file(s) at `path` rooted in cnf.home,
+init initializes a cnf instance makeload reads the conf file(s) at `path` rooted in cnf.home,
 cnf.system or both and parses them from a given format, subsequent
 values overwriting values before.
 
@@ -25,54 +29,58 @@ if no config file is there it creates one at the first writable root from `make`
 if no config file was there and it was created, a `MakeCnfException` is
 thrown. 
 
-``/makeload:
-def makeload(path:str=None, roots:str=None, company:str=None, fmt:str=None, make:str=None):
-    ``.``
+``/init:
+    def __init__(self, path:str=None, roots:str=None, company:str=None, fmt:str=None, make:str=None):
+        ``.``
 ``
 
 resolve the complete paths.
 
+if the home can't be resolved, _cnfpath returns None, check for that.
+
 ``
-    paths = []
-    for root in roots:
-        paths.append(_cnfpath(root, path, company=company))
+        self.paths = []  # TODO make this a method or so?
+        for root in roots:
+            p = _cnfpath(root, path, company=company)
+            if p is not None:
+                self.paths.append(p)
 ``
 
 try to load files at the resoled paths.  keep track of whether at any
 of the paths there is an actual file.
 
 ``
-    anyexists = False
-    mergedcontent = {}
-    for p in paths:
-        exists, content = _load(p, fmt)
-        if exists:
-            anyexists = True
-        _overwrite(mergedcontent, content)
+        anyexists = False
+        mergedcontent = {}
+        for p in self.paths:
+            exists, content = _load(p, fmt)
+            if exists:
+                anyexists = True
+            _overwrite(mergedcontent, content)
 ``
 
 if there isn't a file at any of the paths, create one from
 make-template at the first writeable path.
 
 ``
-    if not anyexists:
-        anywriteable = False
-        for p in paths:
-            if os.access(p, os.W_OK):
-                anywriteable = True
-                _make(p, make)
-                raise MakeCnfException(f"stub config file created at {p}. please edit.")
+        if not anyexists:
+            anywriteable = False
+            for p in self.paths:
+                if os.access(p, os.W_OK):
+                    anywriteable = True
+                    _make(p, make)
+                    raise MakeCnfException(f"stub config file created at {p}. please edit.")
+                    return None
+            if not anywriteable:
+                raise Exception(f"cnf: none of the config paths {self.paths} was writable, please try to put a config file there manually using this template: {make}")  # TODO should this be a MakeCnfException?  or another custom exception?
                 return None
-        if not anywriteable:
-            raise Exception(f"cnf: none of the config paths {paths} was writable, please try to put a config file there manually using this template: {make}")  # TODO should this be a MakeCnfException?  or another custom exception?
-            return None
 ``
 
 return whatever content was loaded (and merged) from the one or more
 roots.
 
 ``
-    return mergedcontent
+        self.conf = mergedcontent
 ``
 
 the root constants.
@@ -82,16 +90,64 @@ home = "home"  # in the user's home directory
 system = "system"  # system wide
 ``
 
-
-imports for makeload.
+imports for init.
 
 ``/import:
 import os
 ``
 
+addflags adds --conf-path and --conf flags to an argument parser.
 
+``/addflags:
+    def addflags(self, parser):
+        ``_``
+``
 
-_cnfpath appends path to root, which can be cnf.home or cnf.system.
+add the flags.
+
+``_:
+        parser.add_argument("--conf-path", action="store_true", help="show config path(s)", required=False)
+        parser.add_argument("--conf", action="store_true", help="show loaded config", required=False)    
+``
+
+handleflag looks for the --conf-path and --conf flags in parsed
+argparse arguments. return whether one of the flags was handled.
+
+``/handleflag:
+    def handleflag(self, args):
+        ``_``
+``
+
+print the config path(s) for the --conf-path flag.
+
+``_:
+        if args.conf_path:
+            for p in self.paths:
+                print(p)
+            return True
+``
+
+print the loaded config for the --conf flag.
+
+``
+        if args.conf:
+            print(json.dumps(self.conf, indent=4))
+            return True
+``
+
+if no flag was handled return false.
+
+``
+        return False
+``
+
+imports for handleflag.
+
+``/import
+import json
+``
+
+_cnfpath appends path to root, which can be cnf.home or cnf.system.  if the home can't be resolved, None is returned.
 company is needed for the windows config paths.
 
 ``/_cnfpath:
@@ -123,11 +179,19 @@ the home location of conf files is ~/.config/ for posix and USERPROFILE/AppData/
 
 for windows, see https://learn.microsoft.com/en-us/archive/blogs/patricka/where-should-i-store-my-data-and-configuration-files-if-i-target-multiple-os-versions
 
+return None if python can't determine the home directory.
+
 ``./home:
         if os.name == "posix":
-            rootpath = os.path.join(Path.home(), ".config/")
+            try:
+                rootpath = os.path.join(Path.home(), ".config/")
+            except Exception as e:
+                return None
         elif os.name == "nt":
-            rootpath = os.path.join(Path.home(), f"AppData/Local/{company}")
+            try:
+                rootpath = os.path.join(Path.home(), f"AppData/Local/{company}")
+            except Exception as e:
+                return None
         else:
             raise Exception(f"cnf: no home config location for os {os.name}.")
 ``            
@@ -190,14 +254,24 @@ configparser doesn't need an opened file, it reads a path.
 
 ``
     if fmt == "ini":
-       config = configparser.ConfigParser()
-       config.read(p)
-       return exists, config
+        config = configparser.ConfigParser()
+        config.read(p)
+        ``.``
+``
+
+convert to dict for easier json output.
+
+``
+        d = {}
+        for k in config.keys():
+            items = config.items(k)
+            d[k] = dict(items)
+        return exists, d
 ``
 
 read the other formats from opened file.
 
-``
+``/_load/_
     else:
         with open(p, "r") as file:
             if fmt == None:
@@ -251,7 +325,7 @@ dictb at key is a map: recurse.
 
 ``
         elif isinstance(dictb[key], dict):
-            overwrite(dicta[key], dictb[key])
+            _overwrite(dicta[key], dictb[key])
 ``
 
 dictb at key is not a map: overwrite.
