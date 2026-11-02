@@ -98,7 +98,7 @@ addflags adds --conf-path and --conf flags to an argument parser.
 add the flags.
 
 ``_:
-        parser.add_argument("--conf-path", action="store_true", help="show config path(s)", required=False)
+        parser.add_argument("--conf-path", action="store_true", help="show possible config path(s)", required=False)
         parser.add_argument("--conf", action="store_true", help="show loaded config", required=False)    
 ``
 
