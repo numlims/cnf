@@ -63,7 +63,7 @@ class cnf:
     # addflags adds --conf-path and --conf flags to an argument parser.  9``/addflags:
     def addflags(self, parser):
         # add the flags.  10``_:
-        parser.add_argument("--conf-path", action="store_true", help="show config path(s)", required=False)
+        parser.add_argument("--conf-path", action="store_true", help="show possible config path(s)", required=False)
         parser.add_argument("--conf", action="store_true", help="show loaded config", required=False)    
         #``10
     #``9
@@ -168,8 +168,12 @@ def _make(p:str, content:str):
 #``29
 # _load loads the config file at path, parsing it as fmt.  30``/_load:
 def _load(p:str, fmt:str):
-    # from the returned content can't be inferred whether the file exists (an empty yaml file parses as None, not as an empty dict), so return whether the file exists.  31``_:
+    # from the returned content can't be inferred whether the file exists
+    # (an empty yaml file parses as None, not as an empty dict), so return
+    # whether the file exists.  31``_:
     exists = os.path.exists(p)
+    if not exists:
+        return (exists, None)
     # configparser doesn't need an opened file, it reads a path.  32``
     if fmt == "ini":
         config = configparser.ConfigParser()

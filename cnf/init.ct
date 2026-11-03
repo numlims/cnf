@@ -284,10 +284,14 @@ def _load(p:str, fmt:str):
     ``_``
 ``
 
-from the returned content can't be inferred whether the file exists (an empty yaml file parses as None, not as an empty dict), so return whether the file exists.
+from the returned content can't be inferred whether the file exists
+(an empty yaml file parses as None, not as an empty dict), so return
+whether the file exists.
 
 ``_:
     exists = os.path.exists(p)
+    if not exists:
+        return (exists, None)
 ``
 
 configparser doesn't need an opened file, it reads a path.
