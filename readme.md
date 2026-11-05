@@ -3,7 +3,9 @@
 load config files and create them if they don't exist.
 
 ```
-config = cnf.makeload(".myprog/conf", root=cnf.home, fmt="yaml", make=template)
+import cnf
+mycnf = cnf.cnf("myprog/conf.yaml", roots=[cnf.system, cnf.user], fmt="yaml", make=template)
+conf = mycnf.conf
 ```
 
 documentation [here](https://numlims.github.io/cnf/).
@@ -15,14 +17,14 @@ download cnf whl from
 pip:
 
 ```
-pip install dbcq-<version>.whl
+pip install cnf-<version>.whl
 ```
 
 ## dev
 
 edit [`cnf/init.ct`](./cnf/init.ct).
 
-to generate the code from the .ct files get [ct](https://github.com/tnustrings/ct).
+generate the code from the .ct files with [ct](https://github.com/tnustrings/ct).
 
 build and install:
 
